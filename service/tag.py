@@ -20,13 +20,14 @@ class Tag:
         token = r.json()['access_token']
         return token
 
-    def add(self, group_name, tag):
+    def add(self, group_name, tag, **kwargs):
         r = requests.post(
             'https://qyapi.weixin.qq.com/cgi-bin/externalcontact/add_corp_tag',
             params={"access_token": self.token},
             json={
                 "group_name": group_name,
-                "tag": tag
+                "tag": tag,
+                **kwargs
             }
         )
         print(json.dumps(r.json(), indent=2))
@@ -62,13 +63,23 @@ class Tag:
 
 # 查询tag_id -> 删除tag_id
 #
-    def delete(self):
+    def delete_group(self, group_id):
         r = requests.post(
             'https://qyapi.weixin.qq.com/cgi-bin/externalcontact/del_corp_tag',
             params={"access_token": self.token},
             json={
-                #"tag_id": ["ettrhEDwAAfhnRnsorEjQSu-7tkiysYw"],
-                "group_id": ["ettrhEDwAAVEzFZl-qf_FJtlwxN4ERLQ"]
+                "group_id": group_id
+            }
+        )
+        assert r.status_code == 200
+        assert r.json()['errcode'] == 0
+
+    def delete_tag(self, tag_id):
+        r = requests.post(
+            'https://qyapi.weixin.qq.com/cgi-bin/externalcontact/del_corp_tag',
+            params={"access_token": self.token},
+            json={
+                "tag_id": tag_id
             }
         )
         assert r.status_code == 200

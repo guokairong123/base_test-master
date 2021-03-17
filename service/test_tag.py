@@ -46,5 +46,10 @@ class TestClassic:
         ]
         self.tag.add(group_name=group_name, tag=tag)
 
-    def test_delete(self):
-        self.tag.delete()
+    def test_delete_group(self):
+        group_id = "ettrhEDwAAVEzFZl-qf_FJtlwxN4ERLQ"
+        self.tag.delete_group(group_id=group_id)
+
+    def test_delete_id(self):
+        tag_id = "ettrhEDwAAVEzFZl-qf_FJtlwxN4ERLQ"
+        self.tag.delete_tag(tag_id=tag_id)
