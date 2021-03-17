@@ -40,11 +40,23 @@ class TestClassic:
     def test_add(self):
         group_name = "test"
         tag = [
+            {"name": "test1"},
             {"name": "test2"},
-            {"name": "test4"},
-            {"name": "test5"}
+            {"name": "test3"}
         ]
-        self.tag.add(group_name=group_name, tag=tag)
+        r = self.tag.add(group_name=group_name, tag=tag)
+        assert r.status_code == 200
+        assert r.json()["errcode"] == 0
+
+    def test_before_add(self):
+        group_name = "test"
+        tag = [
+            {"name": "test1"},
+            {"name": "test2"},
+            {"name": "test3"}
+        ]
+        r = self.tag.before_add(group_name, tag)
+        assert r
 
     def test_delete_group(self):
         group_id = "ettrhEDwAAVEzFZl-qf_FJtlwxN4ERLQ"

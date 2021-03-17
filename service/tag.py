@@ -20,6 +20,16 @@ class Tag:
         token = r.json()['access_token']
         return token
 
+    def is_group_name_exits(self, group_name):
+        for group in self.list().json()["tag_group"]:
+            print(group)
+            # 查询元素是否存在，如果不存在，报错
+            if group_name in group["group_name"]:
+                return group["group_id"]
+        # print("group name not in gout")
+        # return False
+        raise ValueError("group name not in group")
+
     def add(self, group_name, tag, **kwargs):
         r = requests.post(
             'https://qyapi.weixin.qq.com/cgi-bin/externalcontact/add_corp_tag',
@@ -31,9 +41,22 @@ class Tag:
             }
         )
         print(json.dumps(r.json(), indent=2))
-        assert r.json()['errcode'] == 0
-        assert r.status_code == 200
         return r
+
+    def before_add(self, group_name, tag, **kwargs):
+        r = self.add(group_name, tag, **kwargs)
+        # 如果添加的元素已经存在
+        if r.json()["errcode"] == 40071:
+            group_id = self.is_group_name_exits(group_name)
+            if not group_id:
+                return False
+            self.delete_group(group_id)
+            self.add(group_name, tag, **kwargs)
+
+        result = self.is_group_name_exits(group_name)
+        if not result:
+            print("add not success")
+        return result
 
     def list(self):
         r = requests.post(
