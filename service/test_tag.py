@@ -58,6 +58,8 @@ class TestClassic:
         r = self.tag.before_add(group_name, tag)
         assert r
 
+    # 40068 invalid tagid
+    # 删除的元素不存在
     def test_delete_group(self):
         group_id = "ettrhEDwAAVEzFZl-qf_FJtlwxN4ERLQ"
         self.tag.delete_group(group_id=group_id)

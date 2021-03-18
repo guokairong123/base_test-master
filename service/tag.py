@@ -28,7 +28,17 @@ class Tag:
                 return group["group_id"]
         # print("group name not in gout")
         # return False
-        raise ValueError("group name not in group")
+        raise False
+
+    def is_group_id_exits(self, group_id):
+        for group in self.list().json()["tag_group"]:
+            print(group)
+            # 查询元素是否存在，如果不存在，报错
+            if group_id in group["group_id"]:
+                return True
+        # print("group name not in gout")
+        # return False
+        raise False
 
     def add(self, group_name, tag, **kwargs):
         r = requests.post(
@@ -94,8 +104,10 @@ class Tag:
                 "group_id": group_id
             }
         )
+        print(json.dumps(r.json(), indent=2))
         assert r.status_code == 200
         assert r.json()['errcode'] == 0
+        return r
 
     def delete_tag(self, tag_id):
         r = requests.post(
@@ -105,5 +117,12 @@ class Tag:
                 "tag_id": tag_id
             }
         )
+        print(json.dumps(r.json(), indent=2))
         assert r.status_code == 200
         assert r.json()['errcode'] == 0
+        return r
+
+    def delete_and_detect_group(self, groud_id):
+        r = self.delete_group(groud_id)
+        if r.json()['error'] == 40068:
+
