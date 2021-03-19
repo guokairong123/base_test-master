@@ -2,23 +2,13 @@ import json
 
 import requests
 
+from service.base_api import BaseApi
 
-class Tag:
+
+class Tag(BaseApi):
 
     def __init__(self):
-        self.token = self.get_token()
-
-    def get_token(self):
-        r = requests.get(
-            'https://qyapi.weixin.qq.com/cgi-bin/gettoken',
-            params={
-                "corpid": "ww5025f4943fd0f90a",
-                "corpsecret": "sZVwEvsJ5u6-GeJA5lR_TaXbZ-yC2gTNoE4Byg1mLlE"
-            }
-        )
-        print(json.dumps(r.json(), indent=2))
-        token = r.json()['access_token']
-        return token
+        super().__init__()
 
     def is_group_name_exits(self, group_name):
         for group in self.list().json()["tag_group"]:
@@ -38,18 +28,29 @@ class Tag:
                 return True
         # print("group name not in gout")
         # return False
-        raise False
+        return False
 
     def add(self, group_name, tag, **kwargs):
-        r = requests.post(
-            'https://qyapi.weixin.qq.com/cgi-bin/externalcontact/add_corp_tag',
-            params={"access_token": self.token},
-            json={
+        data = {
+            "method": "post",
+            "url": "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/add_corp_tag",
+            "params": {"access_token": self.token},
+            "json": {
                 "group_name": group_name,
                 "tag": tag,
                 **kwargs
             }
-        )
+        }
+        # r = requests.post(
+        #     'https://qyapi.weixin.qq.com/cgi-bin/externalcontact/add_corp_tag',
+        #     params={"access_token": self.token},
+        #     json={
+        #         "group_name": group_name,
+        #         "tag": tag,
+        #         **kwargs
+        #     }
+        # )
+        r = self.send(data)
         print(json.dumps(r.json(), indent=2))
         return r
 
@@ -106,7 +107,6 @@ class Tag:
         )
         print(json.dumps(r.json(), indent=2))
         assert r.status_code == 200
-        assert r.json()['errcode'] == 0
         return r
 
     def delete_tag(self, tag_id):
@@ -122,7 +122,16 @@ class Tag:
         assert r.json()['errcode'] == 0
         return r
 
-    def delete_and_detect_group(self, groud_id):
-        r = self.delete_group(groud_id)
-        if r.json()['error'] == 40068:
+    def delete_and_detect_group(self, groud_ids):
+        deleted_group_ids = []
+        r = self.delete_group(groud_ids)
+        if r.json()['errcode'] == 40068:
+            for group_id in groud_ids:
+                if not self.is_group_id_exits(group_id):
+                    new_group_id = self.before_add("tmp", [{"name": "test"}])
+                    deleted_group_ids.append(new_group_id)
+                else:
+                    deleted_group_ids.append(group_id)
+            r = self.delete_group(deleted_group_ids)
+        return r
 

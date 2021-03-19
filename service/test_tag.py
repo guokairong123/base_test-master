@@ -13,14 +13,14 @@ class TestClassic:
         # self.tag_id = r.json()['tag_group']['tag']['id']
 
     @pytest.mark.parametrize('tag_id,name', [
-        ['ettrhEDwAApRUtlv5QLoPY8nGvamIyVg', 'tag_new'],
-        ['ettrhEDwAApRUtlv5QLoPY8nGvamIyVg', '中文'],
-        ['ettrhEDwAApRUtlv5QLoPY8nGvamIyVg', '你是']
+        ['ettrhEDwAAJ68kxUxAVsQ8xwDCK5KOTg', 'tag_new'],
+        ['ettrhEDwAAGxx8807ekDQoSb1xd5-1Kw', '中文'],
+        ['ettrhEDwAA8zLl_-JiC5KSB0hADr1SgA', '你是']
     ])
     def test_tag_list(self, tag_id, name):
         tag_name = name + str(datetime.datetime.now().strftime("%Y%m%d-%H%M"))
         group_name = '测试'
-        self.tag.update(id=tag_id, name=tag_name)
+        self.tag.update(tag_id, tag_name)
         r = self.tag.list()
         print(json.dumps(r.json(), indent=2))
         tag = [
@@ -49,7 +49,7 @@ class TestClassic:
         assert r.json()["errcode"] == 0
 
     def test_before_add(self):
-        group_name = "test"
+        group_name = "test1111"
         tag = [
             {"name": "test1"},
             {"name": "test2"},
@@ -67,3 +67,7 @@ class TestClassic:
     def test_delete_id(self):
         tag_id = "ettrhEDwAAVEzFZl-qf_FJtlwxN4ERLQ"
         self.tag.delete_tag(tag_id=tag_id)
+
+    def test_delete_and_detect_group(self):
+        group_id = ["ettrhEDwAAloLp0iUKFO6kShc9C23-7w"]
+        self.tag.delete_and_detect_group(group_id)
