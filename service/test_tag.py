@@ -38,13 +38,7 @@ class TestClassic:
         self.tag.list()
 
     def test_add(self):
-        group_name = "test"
-        tag = [
-            {"name": "test1"},
-            {"name": "test2"},
-            {"name": "test3"}
-        ]
-        r = self.tag.add(group_name=group_name, tag=tag)
+        r = self.tag.add()
         assert r.status_code == 200
         assert r.json()["errcode"] == 0
 

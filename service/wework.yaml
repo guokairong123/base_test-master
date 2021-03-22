@@ -1,0 +1,10 @@
+add:
+    "method": "post"
+    "url": "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/add_corp_tag?access_token=${token}"
+    "json":
+      "group_name": ${group_name}
+      "tag": [
+        {"name": "test1"},
+        {"name": "test2"},
+        {"name": "test3"}
+      ]

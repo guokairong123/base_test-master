@@ -1,7 +1,7 @@
 import json
 
 import requests
-
+import yaml
 from service.base_api import BaseApi
 
 
@@ -30,17 +30,17 @@ class Tag(BaseApi):
         # return False
         return False
 
-    def add(self, group_name, tag, **kwargs):
-        data = {
-            "method": "post",
-            "url": "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/add_corp_tag",
-            "params": {"access_token": self.token},
-            "json": {
-                "group_name": group_name,
-                "tag": tag,
-                **kwargs
-            }
-        }
+    def add(self):
+        # data = {
+        #     "method": "post",
+        #     "url": "https://qyapi.weixin.qq.com/cgi-bin/externalcontact/add_corp_tag",
+        #     "params": {"access_token": self.token},
+        #     "json": {
+        #         "group_name": group_name,
+        #         "tag": tag,
+        #         **kwargs
+        #     }
+        # }
         # r = requests.post(
         #     'https://qyapi.weixin.qq.com/cgi-bin/externalcontact/add_corp_tag',
         #     params={"access_token": self.token},
@@ -50,8 +50,15 @@ class Tag(BaseApi):
         #         **kwargs
         #     }
         # )
-        r = self.send(data)
-        print(json.dumps(r.json(), indent=2))
+        with open("wework.yaml", encoding="utf-8", ) as f:
+            raw_data = yaml.load(f)
+        raw_data = json.dumps(raw_data)
+        self.params['token'] = self.token
+        self.params['group_name'] = "Mike"
+        for key, value in self.params.items():
+            raw_data = raw_data.replace("${"+key+"}", value)
+        data = json.loads(raw_data)
+        r = self.send(data["add"])
         return r
 
     def before_add(self, group_name, tag, **kwargs):
