@@ -8,7 +8,7 @@ add:
       - 0
       - 1
   ids:
-    - 'int_case'
+    - '整数'
     - 'bignum_case'
     - 'float_case'
     - 'minus_case'
