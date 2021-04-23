@@ -34,6 +34,7 @@ class TestCal(Calculator):
         result = self.calc.add(a, b)
         assert result == expect
 
+    @pytest.mark.flaky(reruns=3, reruns_dalay=5)
     def test_sub(self):
         result = self.calc.sub(5, 3)
         assert result == 5

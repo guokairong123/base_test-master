@@ -14,3 +14,8 @@ def test_case3(login, conn_db):
     print(login)
     print(conn_db)
     print("用例3")
+
+
+def test_case4():
+    pytest.assume(True)
+    pytest.assume(False)
